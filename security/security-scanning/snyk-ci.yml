@@ -1,0 +1,23 @@
+name: Security Scan with Snyk
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Snyk CLI
+        run: |
+          curl -fsSL https://static.snyk.io/cli/install.sh | bash
+          snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Scan for Vulnerabilities
+        run: |
+          snyk container test my-docker-repo/ecommerce-app:latest
